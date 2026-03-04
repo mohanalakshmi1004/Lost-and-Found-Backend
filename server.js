@@ -6,11 +6,21 @@ const authMiddleWare = require('./utils/authMiddleware.js')
 require("dotenv").config();
 
 const app = express()
-// frontend url configurable via env
+// frontend url(s) configurable via env
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+// support additional origins such as localhost during development
+const CORS_WHITELIST = [FRONTEND_URL, "http://localhost:3000"].filter(Boolean);
+
 // Middleware
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: function(origin, callback) {
+    // allow non-browser requests like curl/postman
+    if (!origin) return callback(null, true);
+    if (CORS_WHITELIST.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
