@@ -6,9 +6,11 @@ const authMiddleWare = require('./utils/authMiddleware.js')
 require("dotenv").config();
 
 const app = express()
+// frontend url configurable via env
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 // Middleware
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
