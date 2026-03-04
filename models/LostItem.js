@@ -8,7 +8,12 @@ const LostItemSchema = new mongoose.Schema({
   contactName: String,
   contactPhone: String,
   userAddress: String,
-  image: String
+  image: String,
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
+  }
 });
 
 module.exports = mongoose.model("LostItem", LostItemSchema);

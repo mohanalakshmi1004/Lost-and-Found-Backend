@@ -1,21 +1,28 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const authRoutes = require("./routes/authRoutes.js");
+const authMiddleWare = require('./utils/authMiddleware.js')
 require("dotenv").config();
 
-const app = express();
-
+const app = express()
 // Middleware
 app.use(cors({
-  origin: "http://localhost:3000", // restrict to your frontend
-  methods: ["GET", "POST", "DELETE"],
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
-app.use(express.json());
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true })); 
 
 // Routes
 app.use("/api/lost", require("./routes/lostRoutes"));
 app.use("/api/found", require("./routes/foundRoutes"));
+
+app.use("/api/auth", authRoutes);
+
 
 // Health check route
 app.get("/", (req, res) => {
