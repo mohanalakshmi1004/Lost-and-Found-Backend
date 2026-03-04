@@ -14,20 +14,9 @@ const CORS_WHITELIST = [FRONTEND_URL, "http://localhost:3000"].filter(Boolean);
 
 // Middleware
 app.use(cors({
-  origin: function(origin, callback) {
-    // allow non-browser requests like curl/postman
-    if (!origin) return callback(null, true);
-    if (CORS_WHITELIST.indexOf(origin) !== -1) {
-      return callback(null, true);
-    }
-    // origin not recognized -> do not set header
-    return callback(null, false);
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: true,
   credentials: true
 }));
-
 // log for debugging
 console.log("CORS whitelist:", CORS_WHITELIST);
 
