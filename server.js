@@ -7,7 +7,8 @@ require("dotenv").config();
 
 const app = express()
 // frontend url(s) configurable via env
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+// sanitize FRONTEND_URL so no trailing slash remains
+const FRONTEND_URL = (process.env.FRONTEND_URL || "http://localhost:3000").replace(/\/+$/g, "");
 // support additional origins such as localhost during development
 const CORS_WHITELIST = [FRONTEND_URL, "http://localhost:3000"].filter(Boolean);
 
@@ -19,12 +20,16 @@ app.use(cors({
     if (CORS_WHITELIST.indexOf(origin) !== -1) {
       return callback(null, true);
     }
-    callback(new Error("Not allowed by CORS"));
+    // origin not recognized -> do not set header
+    return callback(null, false);
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
+// log for debugging
+console.log("CORS whitelist:", CORS_WHITELIST);
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true })); 
